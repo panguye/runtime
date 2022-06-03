@@ -151,6 +151,8 @@ namespace System.Reflection.Emit
             }
             else if (m_maxDepth < m_curDepth)
                 m_maxDepth = m_curDepth;
+            Debug.Assert(m_depthAdjustment >= 0);
+            Debug.Assert(m_curDepth >= 0);
 
             // Record the stack depth at a "target" of this instruction.
             m_targetDepth = m_curDepth;
@@ -319,6 +321,8 @@ namespace System.Reflection.Emit
 
             int depth = m_labelList[labelIndex].m_depth;
             int targetDepth = m_targetDepth;
+            Debug.Assert(depth >= -1);
+            Debug.Assert(targetDepth >= -1);
             if (depth < targetDepth)
             {
                 // Either unknown depth for this label or this branch location has a larger depth than previously recorded.
@@ -332,6 +336,7 @@ namespace System.Reflection.Emit
         internal int GetMaxStackSize()
         {
             // Limit the computed max stack to 2^16 - 1, since the value is mod`ed by 2^16 by other code.
+            Debug.Assert(m_depthAdjustment >= 0);
             return (int)Math.Min(ushort.MaxValue, m_maxDepth + m_depthAdjustment);
         }
 
@@ -1117,6 +1122,7 @@ namespace System.Reflection.Emit
             // Declares a new Label.  This is just a token and does not yet represent any particular location
             // within the stream.  In order to set the position of the label within the stream, you must call
             // Mark Label.
+            Debug.Assert(depth >= -1);
 
             // Delay init the label array in case we dont use it
             m_labelList ??= new __LabelInfo[DefaultLabelArraySize];
